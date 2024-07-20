@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import ButtonAsLink from '@/Components/ButtonAsLink.vue';
 import CompanyEdit from '@/Components/Company/Edit.vue';
 import { Link } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';
@@ -39,9 +39,9 @@ const closeModal = () => {
                         Edit
                     </small>
                 </h2>
-                <Link :href="route('company.index')" :active="route().current('company.index')" as="button">
+                <ButtonAsLink :href="route('company.index')" :active="route().current('company.index')" as="button">
                     Back
-                </Link>
+                </ButtonAsLink>
             </div>
         </template>
 
@@ -53,14 +53,19 @@ const closeModal = () => {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <h2 class="text-2xl mb-4">Employees</h2>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl">Employees</h2>
+                    <ButtonAsLink :href="route('employee.create', company.id)" :active="route().current('employee.create', company.id)" as="button">
+                        Add
+                    </ButtonAsLink>
+                </div>
                 <ul role="list" class="divide-y divide-gray-100 bg-white overflow-hidden shadow-sm sm:rounded-lg px-5">
                     <li 
                         v-for="employee in employees"
                         :key="employee.id"
                         class="flex justify-between gap-x-6 py-5">
                         <div class="flex min-w-0 gap-x-4">
-                        <img class="h-12 w-12 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                        <!-- <img class="h-12 w-12 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt=""> -->
                         <div class="min-w-0 flex-auto">
                             <p class="text-sm font-semibold leading-6 text-gray-900">{{employee.name}}</p>
                             <p class="text-sm leading-6 text-gray-900">Role: {{employee.role}}</p>

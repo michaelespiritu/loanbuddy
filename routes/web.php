@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\BarrowerController;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\BarrowerController;
+use App\Http\Controllers\EmployeeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +50,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/create/company', [CompanyController::class, 'store'])->name('company.store');
     Route::get('/company/{company}', [CompanyController::class, 'show'])->name('company.show');
     Route::patch('/company/{company}', [CompanyController::class, 'update'])->name('company.update');
+});
+
+Route::middleware(['auth', 'role:admin|company owner'])->prefix('{company}/employee')->group(function () {
+    Route::get('/create', [EmployeeController::class, 'create'])->name('employee.create');
+    Route::post('/create', [EmployeeController::class, 'store'])->name('employee.store');
 });
 
 require __DIR__.'/auth.php';
