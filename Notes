@@ -1,0 +1,37 @@
+No Public Registration
+Only Admin can create Company 
+  Upon creation of Company, an account will be be created with the associated user as Main User, with profile and password generation.
+Company and Admin can create Employee
+  Upon creation of employee, an account will be created too, with profile and password generation, and will then send email confirmation.
+Only Employee can create Barrower
+  Upon creation of Barrower, an account will be created too, with profile and password generation, and will then send email confirmation.
+
+
+Types of User
+Admin - Only Admin can add Company.
+Company (Main User) - Only Main User can add Employee. Can add Barrower 
+Employee - Can add Barrower
+Barrower - Can view their
+
+
+User
+  name - string
+  email - string
+
+company 
+  owner_id - foriegn User ID
+  name - string
+
+employees
+  user_id - foreign User ID
+  company_id - company ID
+
+
+
+User hasOne employee record which retrieves company
+company hasMany employee
+employee hasOne company
+
+
+
+
