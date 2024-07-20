@@ -88,4 +88,22 @@ class CompanyController extends Controller
         ]);
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Company $company)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+
+        $company->update($request->all());
+
+
+        return Redirect::route('company.show', $company)->with([
+            'status' => 'Company Information Updated'
+        ]);
+    }
+
 }

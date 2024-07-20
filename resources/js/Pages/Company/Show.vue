@@ -1,15 +1,26 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import Modal from '@/Components/Modal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import CompanyEdit from '@/Components/Company/Edit.vue';
 import { Link } from '@inertiajs/vue3';
+import { nextTick, ref } from 'vue';
+
+const confirmEditCompanyName = ref(false)
 
 defineProps({
     company: {
-        type: String,
+        type: Object,
     },
     employees: {
         type: Object,
     },
 });
+
+const closeModal = () => {
+    confirmEditCompanyName.value = false;
+};
 
 </script>
 
@@ -19,12 +30,26 @@ defineProps({
     <AuthenticatedLayout>
         <template #header>
             <div class="flex justify-between">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ company.name }}</h2>
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    {{ company.name }} 
+                    <small 
+                        class="text-xs"
+                        @click="confirmEditCompanyName = true"
+                    >
+                        Edit
+                    </small>
+                </h2>
                 <Link :href="route('company.index')" :active="route().current('company.index')" as="button">
                     Back
                 </Link>
             </div>
         </template>
+
+        <Modal :show="confirmEditCompanyName" @close="closeModal">
+            <CompanyEdit 
+                :company="company"
+                @close-modal="closeModal"/>
+        </Modal>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">

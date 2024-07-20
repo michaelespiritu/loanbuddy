@@ -48,6 +48,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/create/company', [CompanyController::class, 'create'])->name('company.create');
     Route::post('/create/company', [CompanyController::class, 'store'])->name('company.store');
     Route::get('/company/{company}', [CompanyController::class, 'show'])->name('company.show');
+    Route::patch('/company/{company}', [CompanyController::class, 'update'])->name('company.update');
 });
 
 require __DIR__.'/auth.php';
