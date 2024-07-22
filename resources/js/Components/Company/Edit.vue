@@ -4,7 +4,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 
 const props = defineProps({
     company: {
@@ -16,13 +16,14 @@ const emit = defineEmits(['closeCModal'])
 
 const form = useForm({
     name: props.company.name,
+    path: usePage().url
 });
 
 const submit = () => {
     form.clearErrors()
     form.patch(route('company.update', props.company.id), {
         onSuccess: () => {
-          emit('closeModal')
+          emit('closeModal', true)
         }
     });
 };
@@ -67,7 +68,7 @@ const submit = () => {
         <div v-else> 
             <SecondaryButton SecondaryButton 
                 v-if="! form.processing"
-                @click="emit('closeModal')">
+                @click="">
                 Cancel
             </SecondaryButton>
 

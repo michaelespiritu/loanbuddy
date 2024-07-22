@@ -4,7 +4,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 
 const props = defineProps({
     employee: {
@@ -22,13 +22,14 @@ const form = useForm({
     name: props.employee.name,
     username: props.employee.username,
     email: props.employee.email,
+    path: usePage().url
 });
 
 const submit = () => {
     form.clearErrors()
     form.patch(route('employee.update', {'company': props.company.id, 'employee': props.employee.id}), {
         onSuccess: () => {
-          emit('closeModal')
+          emit('closeModal', true)
         }
     });
 };
@@ -42,7 +43,7 @@ const submit = () => {
     </h2>
     
     <p><small>Employee of {{ company.name }}</small></p>
-      
+
     <div class="mt-6">
         <div>
             <InputLabel for="role" value="Employee Role" />
@@ -131,7 +132,7 @@ const submit = () => {
         <div v-else> 
             <SecondaryButton 
                 v-if="! form.processing"
-                @click="emit('closeModal')">
+                @click="emit('closeModal', false)">
                 Cancel
             </SecondaryButton>
 

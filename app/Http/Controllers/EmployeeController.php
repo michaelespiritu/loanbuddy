@@ -100,9 +100,15 @@ class EmployeeController extends Controller
 
         $employee->update($request->all());
 
-        $employee->user()->update($request->except(['role']));
+        $employee->user()->update($request->except(['role', 'path']));
 
-        return Redirect::route('company.show', $company)->with([
+        $redirect = Redirect::route('company.show', $company);
+
+        if ($request->path == '/my-company') {
+            $redirect = Redirect::route('company.ownerShow');
+        }
+
+        return $redirect->with([
             'status' => 'Employee Updated'
         ]);
     }

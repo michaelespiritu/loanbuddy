@@ -90,6 +90,18 @@ class CompanyController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function ownerShow()
+    {
+        return Inertia::render('MyCompany/Show', [
+            'company' => Auth::user()->company,
+            'employees' => EmployeeResource::collection(Auth::user()->company->employees),
+            'status' => session('status')
+        ]);
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Company $company)
@@ -98,11 +110,15 @@ class CompanyController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-
         $company->update($request->all());
 
+        $redirect = Redirect::route('company.show', $company);
 
-        return Redirect::route('company.show', $company)->with([
+        if ($request->path == '/my-company') {
+            $redirect = Redirect::route('company.ownerShow');
+        }
+
+        return $redirect->with([
             'status' => 'Company Information Updated'
         ]);
     }

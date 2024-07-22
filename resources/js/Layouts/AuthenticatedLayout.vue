@@ -40,7 +40,12 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink 
                                     v-if="$page.props.auth.role.includes('admin')"
                                     :href="route('company.index')" :active="route().current('company.index')">
-                                    Company 
+                                    Company
+                                </NavLink>
+                                <NavLink 
+                                    v-if="$page.props.auth.role.includes('company owner')"
+                                    :href="route('company.ownerShow')" :active="route().current('company.ownerShow')">
+                                    My Company 
                                 </NavLink>
                             </div>
                         </div>

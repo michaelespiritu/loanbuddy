@@ -44,13 +44,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'role:admin|company owner'])->prefix('admin')->group(function () {
     Route::get('/company', [CompanyController::class, 'index'])->name('company.index');
     Route::get('/create/company', [CompanyController::class, 'create'])->name('company.create');
     Route::post('/create/company', [CompanyController::class, 'store'])->name('company.store');
     Route::get('/company/{company}', [CompanyController::class, 'show'])->name('company.show');
+    Route::get('/my-company', [CompanyController::class, 'ownerShow'])->name('company.ownerShow');
     Route::patch('/company/{company}', [CompanyController::class, 'update'])->name('company.update');
 });
+
+Route::get('/my-company', [CompanyController::class, 'ownerShow'])->middleware(['role:company owner'])->name('company.ownerShow');
 
 Route::middleware(['auth', 'role:admin|company owner'])->prefix('{company}/employee')->group(function () {
     Route::get('/create', [EmployeeController::class, 'create'])->name('employee.create');

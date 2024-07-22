@@ -33,7 +33,6 @@ const closeCompanyEditModal = (delay = false) => {
 
 const closeEmployeeEditModal = (delay = false) => {
     let timer = (delay) ? 800 : 0;
-
     setTimeout(()=>{
         confirmEditEmployeeDetails.value = false;
         editEmployeeEditDetails.value = '';
