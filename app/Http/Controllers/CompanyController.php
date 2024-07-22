@@ -64,7 +64,7 @@ class CompanyController extends Controller
             'password' => Hash::make('password'),
         ]);
 
-        $employeeRecord = $user->employee_record()->create(['role'=> 'owner']);
+        $employeeRecord = $user->employee_record()->create(['role'=> 'Owner']);
 
         $company = $user->company()->create(['name'=>$request->company_name]);
 

@@ -54,16 +54,32 @@ const submit = () => {
       </div>
 
       <div class="mt-6 flex justify-end items-center">
-          <SecondaryButton @click="emit('closeModal')"> Cancel </SecondaryButton>
+        <div  v-if="form.wasSuccessful">
+            <Transition
+                enter-active-class="transition ease-in-out"
+                enter-from-class="opacity-0"
+                leave-active-class="transition ease-in-out"
+                leave-to-class="opacity-0"
+            >
+                <p class="text-sm text-gray-600 ml-3">Saved.</p>
+            </Transition>
+        </div>
+        <div v-else> 
+            <SecondaryButton SecondaryButton 
+                v-if="! form.processing"
+                @click="emit('closeModal')">
+                Cancel
+            </SecondaryButton>
 
-          <PrimaryButton
-              class="ms-3"
-              :class="{ 'opacity-25': form.processing }"
-              :disabled="form.processing"
-              @click="submit"
-          >
-              Save Changes
-          </PrimaryButton>
+            <PrimaryButton
+                class="ms-3"
+                :class="{ 'opacity-25': form.processing }"
+                :disabled="form.processing"
+                @click="submit"
+            >
+                Save Changes
+            </PrimaryButton>
+        </div>
       </div>
   </div>
 </template>

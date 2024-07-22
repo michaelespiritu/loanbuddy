@@ -129,7 +129,11 @@ const submit = () => {
             </Transition>
         </div>
         <div v-else> 
-            <SecondaryButton @click="emit('closeModal')"> Cancel </SecondaryButton>
+            <SecondaryButton 
+                v-if="! form.processing"
+                @click="emit('closeModal')">
+                Cancel
+            </SecondaryButton>
 
             <PrimaryButton
                 class="ms-3"

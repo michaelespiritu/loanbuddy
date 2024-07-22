@@ -24,10 +24,12 @@ defineProps({
 });
 
 const closeCompanyEditModal = () => {
-    confirmEditCompanyName.value = false;
+    setTimeout(()=>{
+        confirmEditCompanyName.value = false;
+    }, 800)
 };
 
-const closeEmployeeEditModal = (value) => {
+const closeEmployeeEditModal = () => {
     setTimeout(()=>{
         confirmEditEmployeeDetails.value = false;
         editEmployeeEditDetails.value = '';

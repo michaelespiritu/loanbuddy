@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import NavLink from '@/Components/NavLink.vue';
+import ButtonAsLink from '@/Components/ButtonAsLink.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -33,9 +33,9 @@ const submit = () => {
         <template #header>
             <div class="flex justify-between">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Company</h2>
-                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                    Create Company
-                </NavLink>
+                <ButtonAsLink :href="route('company.index')" :active="route().current('company.index')">
+                    Back
+                </ButtonAsLink>
             </div>
         </template>
 
