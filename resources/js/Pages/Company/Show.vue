@@ -5,11 +5,13 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ButtonAsLink from '@/Components/ButtonAsLink.vue';
 import CompanyEdit from '@/Components/Company/Edit.vue';
 import EmployeeEdit from '@/Components/Employee/Edit.vue';
+import CreateEmployee from '@/Components/Employee/Create.vue';
 import {  ref } from 'vue';
 
 const confirmEditCompanyName = ref(false)
 const confirmEditEmployeeDetails = ref(false)
 const editEmployeeEditDetails = ref(null)
+const confirmCreateEmployee = ref(null)
 
 defineProps({
     company: {
@@ -39,6 +41,14 @@ const closeEmployeeEditModal = (delay = false) => {
         editEmployeeEditDetails.value = '';
     }, timer)
 };
+
+const confirmCreateEmployeeModal = (delay = false) => {
+    let timer = (delay) ? 800 : 0;
+    setTimeout(()=>{
+        confirmCreateEmployee.value = false;
+    }, timer)
+};
+
 
 </script>
 
@@ -76,13 +86,19 @@ const closeEmployeeEditModal = (delay = false) => {
                 @close-modal="closeEmployeeEditModal"/>
         </Modal>
 
+        <Modal :show="confirmCreateEmployee" @close="confirmCreateEmployeeModal">
+            <CreateEmployee 
+                :company="company"
+                @close-modal="confirmCreateEmployeeModal"/>
+        </Modal>
+
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl">Employees</h2>
-                    <ButtonAsLink :href="route('employee.create', company.id)" :active="route().current('employee.create', company.id)" as="button">
+                    <SecondaryButton @click="confirmCreateEmployee = true" as="button">
                         Add
-                    </ButtonAsLink>
+                    </SecondaryButton>
                 </div>
                 <ul role="list" class="divide-y divide-gray-100 bg-white overflow-hidden shadow-sm sm:rounded-lg px-5">
                     <li 

@@ -53,9 +53,15 @@ class EmployeeController extends Controller
         $company->employees()->attach($employeeRecord);
 
         $user->assignRole('employee');
+        
+        $redirect = Redirect::route('company.show', $company);
 
-        return Redirect::route('company.show', $company)->with([
-            'status' => 'Company Created'
+        if ($request->path == '/my-company') {
+            $redirect = Redirect::route('company.ownerShow');
+        }
+
+        return $redirect->with([
+            'status' => 'Employee Updated'
         ]);
     }
 

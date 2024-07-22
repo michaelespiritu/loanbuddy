@@ -17,7 +17,7 @@ const form = useForm({
     name: '',
     username: '',
     role: '',
-    email: '',
+    email: ''
 });
 
 const submit = () => {
@@ -33,7 +33,7 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Add Employee for {{ company.name }}" />
+    <Head title="Add Employee" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -52,6 +52,23 @@ const submit = () => {
                         {{ status }}
                     </div>
                     <form @submit.prevent="submit">
+                        
+                        <div class="mb-5">
+                            <InputLabel for="role" value="Role" />
+
+                            <TextInput
+                                id="name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.role"
+                                required
+                                autocomplete="role"
+                            />
+
+                            <InputError class="mt-2" :message="form.errors.role" />
+
+                        </div>
+
                         <div class="mb-5">
                             <InputLabel for="name" value=" Name" />
 
@@ -81,22 +98,6 @@ const submit = () => {
                             />
 
                             <InputError class="mt-2" :message="form.errors.username" />
-
-                        </div>
-
-                        <div class="mb-5">
-                            <InputLabel for="role" value="Role" />
-
-                            <TextInput
-                                id="name"
-                                type="text"
-                                class="mt-1 block w-full"
-                                v-model="form.role"
-                                required
-                                autocomplete="role"
-                            />
-
-                            <InputError class="mt-2" :message="form.errors.role" />
 
                         </div>
 
