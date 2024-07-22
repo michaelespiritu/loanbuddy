@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Company;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
@@ -77,9 +78,33 @@ class EmployeeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Company $company, Employee $employee)
     {
-        //
+        $request->validate([
+            'role' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255',
+        ]);
+
+        if ($employee->user->email != $request->email) {
+            $request->validate([
+                'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            ]);
+        }
+
+        if ($employee->user->username != $request->username) {
+            $request->validate([
+                'username' => 'required|string|lowercase|max:255|unique:'.User::class,
+            ]);
+        }
+
+        $employee->update($request->all());
+
+        $employee->user()->update($request->except(['role']));
+
+        return Redirect::route('company.show', $company)->with([
+            'status' => 'Employee Updated'
+        ]);
     }
 
     /**

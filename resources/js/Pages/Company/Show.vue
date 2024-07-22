@@ -4,10 +4,12 @@ import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ButtonAsLink from '@/Components/ButtonAsLink.vue';
 import CompanyEdit from '@/Components/Company/Edit.vue';
-import { Link } from '@inertiajs/vue3';
-import { nextTick, ref } from 'vue';
+import EmployeeEdit from '@/Components/Employee/Edit.vue';
+import {  ref } from 'vue';
 
 const confirmEditCompanyName = ref(false)
+const confirmEditEmployeeDetails = ref(false)
+const editEmployeeEditDetails = ref(null)
 
 defineProps({
     company: {
@@ -16,10 +18,20 @@ defineProps({
     employees: {
         type: Object,
     },
+    status: {
+        type: String,
+    },
 });
 
-const closeModal = () => {
+const closeCompanyEditModal = () => {
     confirmEditCompanyName.value = false;
+};
+
+const closeEmployeeEditModal = (value) => {
+    setTimeout(()=>{
+        confirmEditEmployeeDetails.value = false;
+        editEmployeeEditDetails.value = '';
+    }, 800)
 };
 
 </script>
@@ -33,7 +45,7 @@ const closeModal = () => {
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                     {{ company.name }} 
                     <small 
-                        class="text-xs"
+                        class="text-xs cursor-pointer text-rose-700"
                         @click="confirmEditCompanyName = true"
                     >
                         Edit
@@ -45,10 +57,17 @@ const closeModal = () => {
             </div>
         </template>
 
-        <Modal :show="confirmEditCompanyName" @close="closeModal">
+        <Modal :show="confirmEditCompanyName" @close="closeCompanyEditModal">
             <CompanyEdit 
                 :company="company"
-                @close-modal="closeModal"/>
+                @close-modal="closeCompanyEditModal"/>
+        </Modal>
+
+        <Modal :show="confirmEditEmployeeDetails" @close="closeEmployeeEditModal">
+            <EmployeeEdit 
+                :employee="editEmployeeEditDetails"
+                :company="company"
+                @close-modal="closeEmployeeEditModal"/>
         </Modal>
 
         <div class="py-12">
@@ -63,7 +82,7 @@ const closeModal = () => {
                     <li 
                         v-for="employee in employees"
                         :key="employee.id"
-                        class="flex justify-between gap-x-6 py-5">
+                        class="flex justify-between items-center gap-x-6 py-5">
                         <div class="flex min-w-0 gap-x-4">
                         <!-- <img class="h-12 w-12 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt=""> -->
                         <div class="min-w-0 flex-auto">
@@ -72,7 +91,11 @@ const closeModal = () => {
                         </div>
                         </div>
                         <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                        <p class="mt-1 text-xs leading-5 text-gray-500">Last seen <time datetime="2023-01-23T13:23Z">3h ago</time></p>
+                        <SecondaryButton 
+                            @click="confirmEditEmployeeDetails = true, editEmployeeEditDetails=employee"
+                        >
+                            Edit
+                        </SecondaryButton>
                         </div>
                     </li>
                 </ul>

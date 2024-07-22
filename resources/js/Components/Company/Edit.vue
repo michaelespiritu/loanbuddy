@@ -12,7 +12,7 @@ const props = defineProps({
     }
 });
 
-const emit = defineEmits(['closeModal'])
+const emit = defineEmits(['closeCModal'])
 
 const form = useForm({
     name: props.company.name,

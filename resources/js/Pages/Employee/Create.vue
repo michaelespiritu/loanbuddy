@@ -121,7 +121,7 @@ const submit = () => {
                             <div>
 
                                 <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                    Create Company
+                                    Create Employee
                                 </PrimaryButton>
                             </div>
                             <div>

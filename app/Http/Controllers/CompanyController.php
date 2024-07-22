@@ -84,7 +84,8 @@ class CompanyController extends Controller
     {
         return Inertia::render('Company/Show', [
             'company' => $company,
-            'employees' => EmployeeResource::collection($company->employees)
+            'employees' => EmployeeResource::collection($company->employees),
+            'status' => session('status')
         ]);
     }
 
