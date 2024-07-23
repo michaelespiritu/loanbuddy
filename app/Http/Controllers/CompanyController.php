@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\CompanyResource;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\EmployeeResource;
 use Illuminate\Support\Facades\Redirect;
 
@@ -69,6 +70,12 @@ class CompanyController extends Controller
         $company->employees()->create(['role'=> 'Owner', 'user_id'=> $user->id]);
 
         $user->assignRole('company owner');
+
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo')->store('images', 'public');
+            $path = Storage::url($file);
+            $company->update(['company_logo' => $path]);
+        }
 
         return Redirect::route('company.index')->with([
             'status' => 'Company Created'

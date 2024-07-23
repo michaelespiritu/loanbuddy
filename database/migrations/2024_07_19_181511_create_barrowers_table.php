@@ -28,8 +28,8 @@ return new class extends Migration
             $table->string('duration');
             $table->string('frequency_of_payment');
             $table->dateTime('start_of_payment_date');
-            $table->string('penalty');
-            $table->string('status');
+            $table->string('penalty')->nullable();
+            $table->string('status')->default('active');
             $table->timestamps();
         });
     }

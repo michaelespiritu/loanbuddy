@@ -20,6 +20,7 @@ class Loan extends Model
         'frequency_of_payment',
         'start_of_payment_date',
         'penalty',
+        'status'
     ];
 
     public function barrower(): BelongsTo

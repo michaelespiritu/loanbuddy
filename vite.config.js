@@ -17,4 +17,8 @@ export default defineConfig({
             },
         }),
     ],
+    server: {
+        https: false,
+        host: 'loanbuddy.local',
+    },
 });

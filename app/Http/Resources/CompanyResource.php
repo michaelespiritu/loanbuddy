@@ -17,7 +17,8 @@ class CompanyResource extends JsonResource
         return [
             'id' => $this->id,
             'company_name' => $this->name,
-            'user_name' => $this->owner->name
+            'user_name' => $this->owner->name,
+            'company_logo' => asset($this->company_logo),
         ];
     }
 }

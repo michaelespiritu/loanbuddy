@@ -12,6 +12,7 @@ const form = useForm({
     name: '',
     username: '',
     email: '',
+    logo: '',
 });
 
 const submit = () => {
@@ -108,6 +109,26 @@ const submit = () => {
                             />
 
                             <InputError class="mt-2" :message="form.errors.email" />
+
+                        </div>
+
+                        <div class="mb-5">
+                            <InputLabel for="logo" value="Company Logo" />
+
+                            <!-- <TextInput
+                                id="logo"
+                                type="file"
+                                class="mt-1 block w-full"
+                                v-model="form.logo"
+                                required
+                            /> -->
+
+                            <InputError class="mt-2" :message="form.errors.logo" />
+
+                            <input type="file" @input="form.logo = $event.target.files[0]" />
+                            <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+                            {{ form.progress.percentage }}%
+                            </progress>
 
                         </div>
 
