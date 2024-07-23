@@ -65,9 +65,6 @@ const confirmCreateEmployeeModal = (delay = false) => {
                         Edit
                     </small>
                 </h2>
-                <ButtonAsLink :href="route('company.index')" :active="route().current('company.index')" as="button">
-                    Back
-                </ButtonAsLink>
             </div>
         </template>
 

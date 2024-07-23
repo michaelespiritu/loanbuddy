@@ -37,8 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return redirect(route('dashboard'));
     });
-    Route::get('/barrower', [BarrowerController::class, 'index'])->name('barrower.index');
-    Route::post('/barrower', [BarrowerController::class, 'create'])->name('barrower.create');
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -59,6 +58,13 @@ Route::middleware(['auth', 'role:admin|company owner'])->prefix('{company}/emplo
     Route::get('/create', [EmployeeController::class, 'create'])->name('employee.create');
     Route::post('/create', [EmployeeController::class, 'store'])->name('employee.store');
     Route::patch('/{employee}', [EmployeeController::class, 'update'])->name('employee.update');
+});
+
+Route::middleware(['auth', 'role:company owner|employee'])->prefix('barrower')->group(function () {
+    Route::get('/', [BarrowerController::class, 'index'])->name('barrower.index');
+    Route::post('/user', [BarrowerController::class, 'createUser'])->name('barrower.create.user');
+    Route::get('/{barrower}', [BarrowerController::class, 'barrowerDetail'])->name('barrower.detail');
+    Route::post('/{barrower}/loan', [BarrowerController::class, 'createLoan'])->name('barrower.create.loan');
 });
 
 require __DIR__.'/auth.php';

@@ -48,19 +48,11 @@ class EmployeeController extends Controller
             'password' => Hash::make('password'),
         ]);
 
-        $employeeRecord = $user->employee_record()->create(['role'=> $request->role]);
-
-        $company->employees()->attach($employeeRecord);
+        $company->employees()->create(['role'=> $request->role, 'user_id'=> $user->id]);
 
         $user->assignRole('employee');
         
-        $redirect = Redirect::route('company.show', $company);
-
-        if ($request->path == '/my-company') {
-            $redirect = Redirect::route('company.ownerShow');
-        }
-
-        return $redirect->with([
+        return Redirect::back()->with([
             'status' => 'Employee Updated'
         ]);
     }
@@ -108,13 +100,7 @@ class EmployeeController extends Controller
 
         $employee->user()->update($request->except(['role', 'path']));
 
-        $redirect = Redirect::route('company.show', $company);
-
-        if ($request->path == '/my-company') {
-            $redirect = Redirect::route('company.ownerShow');
-        }
-
-        return $redirect->with([
+        return Redirect::back()->with([
             'status' => 'Employee Updated'
         ]);
     }

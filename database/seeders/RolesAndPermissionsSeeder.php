@@ -29,5 +29,6 @@ class RolesAndPermissionsSeeder extends Seeder
         $role = Role::create(['name' => 'employee'])
             ->givePermissionTo(['can add barrower']);
 
+        $role = Role::create(['name' => 'barrower']);
     }
 }

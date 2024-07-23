@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->foreignUlid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignUlid('company_id')->constrained('companies')->cascadeOnDelete();
             $table->string('role');
             $table->timestamps();
         });

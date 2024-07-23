@@ -7,13 +7,18 @@ import { Head, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
     name: '',
+    username: '',
+    email: '',
 });
 
+
 const submit = () => {
-    axios.post(route('barrower.create'), form)
-    .then(res => {
-      console.log(res.data)
-    })
+    form.clearErrors()
+    form.post(route('barrower.create.user'), {
+        onSuccess: () => {
+            form.reset()
+        }
+    });
 };
 
 </script>
@@ -26,35 +31,85 @@ const submit = () => {
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Barrower</h2>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+        <div class="py-12" >
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-2">
+                <h4>Barrower Personal Information</h4>
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-5">
+                    <div class="mb-5">
+                        <InputLabel for="name" value=" Name" />
 
-              <form @submit.prevent="submit">
-                  <div>
-                      <InputLabel for="email" value="Email" />
+                        <TextInput
+                            id="name"
+                            type="text"
+                            class="mt-1 block w-full"
+                            v-model="form.name"
+                            required
+                        />
 
-                      <TextInput
-                          id="email"
-                          type="email"
-                          class="mt-1 block w-full"
-                          v-model="name"
-                          required
-                          autofocus
-                          autocomplete="username"
-                      />
+                        <InputError class="mt-2" :message="form.errors.name" />
 
-                  </div>
+                    </div>
 
-                  <div class="flex items-center justify-between mt-4">
-                     
-                      <div>
+                    <div class="mb-5">
+                        <InputLabel for="username" value="Username" />
 
-                          <PrimaryButton>
-                              Create Barrower
-                          </PrimaryButton>
-                      </div>
-                  </div>
-              </form>
+                        <TextInput
+                            id="name"
+                            type="text"
+                            class="mt-1 block w-full"
+                            v-model="form.username"
+                            required
+                        />
+
+                        <InputError class="mt-2" :message="form.errors.username" />
+
+                    </div>
+
+                    <div class="mb-5">
+                        <InputLabel for="email" value="Email" />
+
+                        <TextInput
+                            id="email"
+                            type="email"
+                            class="mt-1 block w-full"
+                            v-model="form.email"
+                            required
+                        />
+
+                        <InputError class="mt-2" :message="form.errors.email" />
+
+                    </div>
+
+                    <div class="mt-6 flex justify-end items-center">
+
+                        <div  v-if="form.wasSuccessful">
+                            <Transition
+                                enter-active-class="transition ease-in-out"
+                                enter-from-class="opacity-0"
+                                leave-active-class="transition ease-in-out"
+                                leave-to-class="opacity-0"
+                            >
+                                <p class="text-sm text-gray-600 ml-3">Saved.</p>
+                            </Transition>
+                        </div>
+                        <div v-else> 
+                            <SecondaryButton 
+                                v-if="! form.processing"
+                                @click="emit('closeModal', false)">
+                                Cancel
+                            </SecondaryButton>
+
+                            <PrimaryButton
+                                class="ms-3"
+                                :class="{ 'opacity-25': form.processing }"
+                                :disabled="form.processing"
+                                @click="submit"
+                            >
+                                Create Barrower
+                            </PrimaryButton>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </AuthenticatedLayout>

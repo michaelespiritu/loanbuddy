@@ -64,11 +64,9 @@ class CompanyController extends Controller
             'password' => Hash::make('password'),
         ]);
 
-        $employeeRecord = $user->employee_record()->create(['role'=> 'Owner']);
+        $company = $user->userCompany()->create(['name'=>$request->company_name]);
 
-        $company = $user->company()->create(['name'=>$request->company_name]);
-
-        $company->employees()->attach($employeeRecord);
+        $company->employees()->create(['role'=> 'Owner', 'user_id'=> $user->id]);
 
         $user->assignRole('company owner');
 
@@ -95,8 +93,8 @@ class CompanyController extends Controller
     public function ownerShow()
     {
         return Inertia::render('MyCompany/Show', [
-            'company' => Auth::user()->company,
-            'employees' => EmployeeResource::collection(Auth::user()->company->employees),
+            'company' => Auth::user()->userCompany,
+            'employees' => EmployeeResource::collection(Auth::user()->userCompany->employees),
             'status' => session('status')
         ]);
     }

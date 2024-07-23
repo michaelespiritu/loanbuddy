@@ -48,13 +48,29 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function company(): HasOne
+    //FOR COMPANY OWNER
+    public function userCompany(): HasOne 
     {
         return $this->hasOne(Company::class, 'owner_id');
     }
 
-    public function employee_record(): HasOne
+    public function company(): HasOne 
+    {
+        return $this->hasOne(Company::class);
+    }
+
+    public function employee(): HasOne
     {
         return $this->hasOne(Employee::class);
+    }
+
+    public function barrower_record(): HasOne
+    {
+        return $this->hasOne(Barrower::class, 'user_id');
+    }
+
+    public function barrower_created_by(): HasOne
+    {
+        return $this->hasOne(Barrower::class, 'created_id');
     }
 }
