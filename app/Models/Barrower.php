@@ -20,6 +20,8 @@ class Barrower extends Model
         'company_id',
     ];
 
+    protected $with = ['user', 'created_by'];
+
     public function user(): belongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
