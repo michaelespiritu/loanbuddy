@@ -20,6 +20,7 @@ class Employee extends Model
         'role',
     ];
 
+    protected $with = ['user'];
 
     public function user() : BelongsTo 
     {

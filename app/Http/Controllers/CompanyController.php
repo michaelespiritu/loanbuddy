@@ -24,6 +24,7 @@ class CompanyController extends Controller
             return Inertia::render('Company/Index', [
                 'companies' => CompanyResource::collection(
                     Company::query()
+                    ->with('owner')
                     ->latest()
                     ->when($request->input('search'), function ($query, $search) {
                         $query->where('name', 'like', "%{$search}%");
