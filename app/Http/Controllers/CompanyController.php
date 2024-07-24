@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\CompanyResource;
 use Illuminate\Support\Facades\Storage;
@@ -20,6 +21,7 @@ class CompanyController extends Controller
      */
     public function index(Request $request)
     {
+        Gate::authorize('viewAny', Company::class);
         if(Company::count()) {
             return Inertia::render('Company/Index', [
                 'companies' => CompanyResource::collection(
@@ -88,6 +90,7 @@ class CompanyController extends Controller
      */
     public function show(Company $company)
     {
+        Gate::authorize('view', $company);
         return Inertia::render('Company/Show', [
             'company' => $company,
             'employees' => EmployeeResource::collection($company->employees),
