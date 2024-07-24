@@ -47,6 +47,7 @@ class CompanyController extends Controller
      */
     public function create()
     {
+        Gate::authorize('create', Company::class);
         return Inertia::render('Company/Create');
     }
 
@@ -55,6 +56,7 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', Company::class);
         $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:'.User::class,
@@ -115,19 +117,21 @@ class CompanyController extends Controller
      */
     public function update(Request $request, Company $company)
     {
+        Gate::authorize('update', $company);
+
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
-        $company->update($request->all());
-
-        $redirect = Redirect::route('company.show', $company);
-
-        if ($request->path == '/my-company') {
-            $redirect = Redirect::route('company.ownerShow');
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo')->store('images', 'public');
+            $path = Storage::url($file);
+            $company->update(['company_logo' => $path]);
         }
 
-        return $redirect->with([
+        $company->update($request->all());
+
+        return Redirect::back()->with([
             'status' => 'Company Information Updated'
         ]);
     }

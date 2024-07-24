@@ -49,7 +49,7 @@ Route::middleware(['auth', 'role:admin|company owner'])->prefix('admin')->group(
     Route::post('/create/company', [CompanyController::class, 'store'])->name('company.store');
     Route::get('/company/{company}', [CompanyController::class, 'show'])->name('company.show');
     Route::get('/my-company', [CompanyController::class, 'ownerShow'])->name('company.ownerShow');
-    Route::patch('/company/{company}', [CompanyController::class, 'update'])->name('company.update');
+    Route::post('/company/{company}', [CompanyController::class, 'update'])->name('company.update');
 });
 
 Route::get('/my-company', [CompanyController::class, 'ownerShow'])->middleware(['role:company owner'])->name('company.ownerShow');

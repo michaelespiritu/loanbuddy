@@ -31,15 +31,17 @@ class CompanyPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->hasRole(['admin', 'company owner']);
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Company $company): bool
+    public function update(User $user, Company $company): Response
     {
-        //
+        return $user->hasRole(['admin']) || $user->id === $company->owner->id
+                ? Response::allow()
+                : Response::denyAsNotFound();
     }
 
     /**
