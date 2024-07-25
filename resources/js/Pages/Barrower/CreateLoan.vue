@@ -6,6 +6,7 @@ import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { useForm } from '@inertiajs/vue3';
 import { computed, ref, watch, onMounted   } from 'vue';
+import { DateTime } from "luxon";
 
 const sched = ref([])
 
@@ -20,7 +21,9 @@ const form = useForm({
     interest: 7,
     duration: 3,
     frequency_of_payment: {value: 1, label: 'Per Month'},
-    start_of_payment_date: new Date().toISOString().slice(0, 10),
+    schedule_of_payment: 15,
+    start_of_payment_date: DateTime.now().toISODate(),
+    start_of_payment_date_cutoff: DateTime.now().plus({ days: 15 }).toISODate(),
     penalty: '0',
 });
 
@@ -50,7 +53,6 @@ watch(
 
 const schedulePayment = computed(() => {
     // form.sched = []
-    form.sched.push(form.start_of_payment_date)
 
     // const newSched = form.sched.slice(-1).pop()
     // console.log(newSched)
@@ -74,16 +76,19 @@ const schedulePayment = computed(() => {
 
 const schedPayment = (value) => {
 
-    sched.value.push(form.start_of_payment_date)
-
-    const startDate = new Date(sched.value.slice(-1).pop())
-    console.log(startDate)
+    sched.value.push(DateTime.fromISO(form.start_of_payment_date).toISODate())
     const duration = (form.frequency_of_payment.value == 1) ? form.duration : form.duration*form.frequency_of_payment.value
 
     for (let i = 0; i < duration-1; i++) {
-        const dd = new Date(startDate.setMonth(startDate.getMonth() + 1))
+        // const dd = DateTime.fromISO(startDate.plus({ months: duration }))
+        const startDate = DateTime.fromISO(sched.value.slice(-1).pop()).toISODate()
+        console.log(DateTime.fromISO(sched.value.slice(-1).pop()).day)
         
-        console.log( sched.value.push(dd.toISOString().slice(0, 10)) )
+        const dd = (form.frequency_of_payment.value == 1) ? DateTime.fromISO(startDate).plus({ months: 1 }).toISODate() : DateTime.fromISO(startDate).plus({ days: 15 }).toISODate()
+
+        if ((form.frequency_of_payment.value == 1)) {}
+
+        sched.value.push(dd)
     }
 
     // const toAdd = (form.frequency_of_payment.value == 1) ? 1 : 2
@@ -93,6 +98,17 @@ const schedPayment = (value) => {
     // const newDate = new Date(startDate.setMonth(startDate.getMonth() + toAdd)) 
     // return newDate.toISOString().slice(0, 10)
     // return newDate
+}
+
+
+const totalLoanAmount  = () => {
+    const totalInterest = parseInt(((form.loan_amount*(form.interest/100))*form.duration))
+    const totalLoan = parseInt(form.loan_amount)+totalInterest
+    const paymentPerMonth = parseInt(form.duration*form.frequency_of_payment.value)
+    return {
+        'totalLoan': totalLoan,
+        'amountPerPayment': totalLoan/paymentPerMonth
+    }
 }
 </script>
 
@@ -172,6 +188,38 @@ const schedPayment = (value) => {
                         </div>
 
                         <div class="mb-5">
+                            <InputLabel for="schedule_of_payment" value="Schedule of Payment: Every (nth) of the Month" />
+
+                            <TextInput
+                                id="schedule_of_payment"
+                                type="number"
+                                class="mt-1 block w-full"
+                                v-model="form.schedule_of_payment"
+                                required
+                            />
+
+                            <InputError class="mt-2" :message="form.errors.schedule_of_payment" />
+
+                        </div>
+
+                        <div class="mb-5" v-if="form.frequency_of_payment.value == 2">
+                            <InputLabel for="schedule_of_payment" value="Schedule of Payment: Every (nth) of the Month" />
+
+                            <TextInput
+                                id="schedule_of_payment"
+                                type="number"
+                                class="mt-1 block w-full"
+                                v-model="form.schedule_of_payment"
+                                required
+                                autocomplete="schedule_of_payment"
+                                max="31"
+                            />
+
+                            <InputError class="mt-2" :message="form.errors.schedule_of_payment" />
+
+                        </div>
+
+                        <div class="mb-5">
                             <InputLabel for="start_of_payment_date" value="Start of Payment" />
 
                             <TextInput
@@ -184,6 +232,22 @@ const schedPayment = (value) => {
                             />
 
                             <InputError class="mt-2" :message="form.errors.start_of_payment_date" />
+
+                        </div>
+
+                        <div class="mb-5" v-if="form.frequency_of_payment.value == 2">
+                            <InputLabel for="start_of_payment_date" value="Start of Payment" />
+
+                            <TextInput
+                                id="start_of_payment_date"
+                                type="date"
+                                class="mt-1 block w-full"
+                                v-model="form.start_of_payment_date_cutoff"
+                                required
+                                autocomplete="start_of_payment_date"
+                            />
+
+                            <InputError class="mt-2" :message="form.errors.start_of_payment_date_cutoff" />
 
                         </div>
 
@@ -220,9 +284,9 @@ const schedPayment = (value) => {
 
                     <p>Total Principal: {{ form.loan_amount.toLocaleString() }}</p>
                     <p>Total Interest Amount:  {{ (form.loan_amount*(form.interest/100).toLocaleString()).toLocaleString() }}/Month or {{ ((form.loan_amount*(form.interest/100))*form.duration).toLocaleString() }} for {{ form.duration }} Months</p>
-                    <p>Total Loan: {{ (form.loan_amount+((form.loan_amount*(form.interest/100))*form.duration)).toLocaleString() }}</p>
+                    <p>Total Loan: {{ totalLoanAmount()['totalLoan'].toLocaleString() }}</p>
                     <p>Term of Repayment: {{ form.frequency_of_payment.value == 2 ? '2x Per Month' : '1x Per Month' }}</p>
-                    <p>Amount: {{ ((form.loan_amount+((form.loan_amount*(form.interest/100))*form.duration)) / (form.duration*form.frequency_of_payment.value)).toLocaleString() }} {{ form.frequency_of_payment.label }}</p>
+                    <p>Amount: {{ totalLoanAmount()['amountPerPayment'].toLocaleString() }} {{ form.frequency_of_payment.label }}</p>
                     <p>Schedule of Payment: </p>
                     <p
                         v-for="(schedule, index) in sched"
