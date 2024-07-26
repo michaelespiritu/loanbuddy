@@ -123,9 +123,13 @@ const schedPayment = (value) => {
 
     for (let i = 0; i < duration-1; i++) {
         // const dd = DateTime.fromISO(startDate.plus({ months: duration }))
-        const startDate = DateTime.fromISO(sched.value.slice(-1).pop()).toISODate()
-        console.log(DateTime.fromISO(sched.value.slice(-1).pop()).day)
-        
+
+        let startDate = DateTime.fromISO(sched.value.slice(-1).pop()).toISODate()
+
+        if (form.schedule_of_payment > 28) {
+            startDate = DateTime.fromISO(sched.value.slice(-1).pop()).endOf('month').toISODate()
+        }
+
         const dd = (form.frequency_of_payment.value == 1) ? DateTime.fromISO(startDate).plus({ months: 1 }).toISODate() : DateTime.fromISO(startDate).plus({ days: 15 }).toISODate()
 
         if ((form.frequency_of_payment.value == 1)) {}
