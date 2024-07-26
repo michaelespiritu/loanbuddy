@@ -22,9 +22,26 @@ const form = useForm({
     duration: 3,
     frequency_of_payment: {value: 1, label: 'Per Month'},
     schedule_of_payment: 15,
+    schedule_of_payment_if_with_cutoff: 30,
+    start_of_month_payment: DateTime.now().month,
+    start_of_month_payment_value: [
+        {value: 1,  label: 'January'},
+        {value: 2,  label: 'February'},
+        {value: 3,  label: 'March'},
+        {value: 4,  label: 'April'},
+        {value: 5,  label: 'May'},
+        {value: 6,  label: 'June'},
+        {value: 7,  label: 'July'},
+        {value: 8,  label: 'August'},
+        {value: 9,  label: 'September'},
+        {value: 10,  label: 'October'},
+        {value: 11,  label: 'November'},
+        {value: 12,  label: 'December'},
+    ],
     start_of_payment_date: DateTime.now().toISODate(),
     start_of_payment_date_cutoff: DateTime.now().plus({ days: 15 }).toISODate(),
     penalty: '0',
+    months: 30,
 });
 
 onMounted(() => {
@@ -43,6 +60,16 @@ const submit = () => {
 
 watch(
   () => form.start_of_payment_date,
+  (newValue, oldValue) => {
+    sched.value = []
+    schedPayment(newValue)
+  },
+  { deep: true }
+)
+
+
+watch(
+  () => form.schedule_of_payment,
   (newValue, oldValue) => {
     sched.value = []
     schedPayment(newValue)
@@ -76,7 +103,22 @@ const schedulePayment = computed(() => {
 
 const schedPayment = (value) => {
 
-    sched.value.push(DateTime.fromISO(form.start_of_payment_date).toISODate())
+    // sched.value.push(DateTime.fromISO(form.start_of_payment_date).toISODate())
+    // const duration = (form.frequency_of_payment.value == 1) ? form.duration : form.duration*form.frequency_of_payment.value
+
+    // for (let i = 0; i < duration-1; i++) {
+    //     // const dd = DateTime.fromISO(startDate.plus({ months: duration }))
+    //     const startDate = DateTime.fromISO(sched.value.slice(-1).pop()).toISODate()
+    //     console.log(DateTime.fromISO(sched.value.slice(-1).pop()).day)
+        
+    //     const dd = (form.frequency_of_payment.value == 1) ? DateTime.fromISO(startDate).plus({ months: 1 }).toISODate() : DateTime.fromISO(startDate).plus({ days: 15 }).toISODate()
+
+    //     if ((form.frequency_of_payment.value == 1)) {}
+
+    //     sched.value.push(dd)
+    // }
+
+    sched.value.push(DateTime.fromObject({day: form.schedule_of_payment, month: form.start_of_month_payment }).toISODate())
     const duration = (form.frequency_of_payment.value == 1) ? form.duration : form.duration*form.frequency_of_payment.value
 
     for (let i = 0; i < duration-1; i++) {
@@ -90,14 +132,6 @@ const schedPayment = (value) => {
 
         sched.value.push(dd)
     }
-
-    // const toAdd = (form.frequency_of_payment.value == 1) ? 1 : 2
-    //startDate.setDate(startDate.getDate() + toAdd)
-    // console.log(newDate.getMonth());
-
-    // const newDate = new Date(startDate.setMonth(startDate.getMonth() + toAdd)) 
-    // return newDate.toISOString().slice(0, 10)
-    // return newDate
 }
 
 
@@ -190,64 +224,64 @@ const totalLoanAmount  = () => {
                         <div class="mb-5">
                             <InputLabel for="schedule_of_payment" value="Schedule of Payment: Every (nth) of the Month" />
 
-                            <TextInput
+                            <select 
                                 id="schedule_of_payment"
-                                type="number"
-                                class="mt-1 block w-full"
+                                type="text"
+                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                                 v-model="form.schedule_of_payment"
                                 required
-                            />
+                                >
+                                <option 
+                                    v-for="(month, index) in 31"
+                                    :key="index" 
+                                    :value="month"
+                                >
+                                    {{ month }}
+                                </option>
+                            </select>
 
                             <InputError class="mt-2" :message="form.errors.schedule_of_payment" />
 
                         </div>
 
                         <div class="mb-5" v-if="form.frequency_of_payment.value == 2">
-                            <InputLabel for="schedule_of_payment" value="Schedule of Payment: Every (nth) of the Month" />
+                            <InputLabel for="schedule_of_payment" value="Schedule of Payment 2: Every (nth) of the Month" />
 
                             <TextInput
                                 id="schedule_of_payment"
                                 type="number"
                                 class="mt-1 block w-full"
-                                v-model="form.schedule_of_payment"
+                                v-model="form.schedule_of_payment_if_with_cutoff"
                                 required
                                 autocomplete="schedule_of_payment"
                                 max="31"
                             />
 
-                            <InputError class="mt-2" :message="form.errors.schedule_of_payment" />
+                            <InputError class="mt-2" :message="form.errors.schedule_of_payment_if_with_cutoff" />
 
                         </div>
 
+                       
                         <div class="mb-5">
-                            <InputLabel for="start_of_payment_date" value="Start of Payment" />
+                            <InputLabel for="start_of_month_payment" value="Start of Payment" />
 
-                            <TextInput
-                                id="start_of_payment_date"
-                                type="date"
-                                class="mt-1 block w-full"
-                                v-model="form.start_of_payment_date"
+                            <select 
+                                id="start_of_month_payment"
+                                type="text"
+                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                v-model="form.start_of_month_payment"
                                 required
-                                autocomplete="start_of_payment_date"
-                            />
+                                >
+                                <option 
+                                    v-for="month in form.start_of_month_payment_value" 
+                                    :key="month.value" 
+                                    :value="month.value"
+                                >
+                                    {{ month.label }}
+                                </option>
+                            </select>
 
-                            <InputError class="mt-2" :message="form.errors.start_of_payment_date" />
-
-                        </div>
-
-                        <div class="mb-5" v-if="form.frequency_of_payment.value == 2">
-                            <InputLabel for="start_of_payment_date" value="Start of Payment" />
-
-                            <TextInput
-                                id="start_of_payment_date"
-                                type="date"
-                                class="mt-1 block w-full"
-                                v-model="form.start_of_payment_date_cutoff"
-                                required
-                                autocomplete="start_of_payment_date"
-                            />
-
-                            <InputError class="mt-2" :message="form.errors.start_of_payment_date_cutoff" />
+                            <InputError class="mt-2" :message="form.errors.start_of_month_payment" />
 
                         </div>
 
